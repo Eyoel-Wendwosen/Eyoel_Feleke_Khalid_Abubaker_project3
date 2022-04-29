@@ -1,22 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import App from './old/App';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import HomeEntry from './HomeEntry';
-import Login from './Login';
-import SignUp from './Signup';
-import NavBar from './NavBar';
+import HomeEntry from './old/HomeEntry';
+import Login from './old/Login';
+import SignUp from './old/Signup';
+import NavBar from './old/NavBar';
 
 ReactDOM.render(
   <div>
     <BrowserRouter>
       {/* {NavBar goes here} */}
-      <NavBar />
+      {/* <NavBar /> */}
       <Routes>
-        <Route path={"/"} element={<App />} />
+        {/* <Route path={"/"} element={<App />} />
         <Route path={"/home/:homeId"} element={<HomeEntry />} />
         <Route path={"/login"} element={<Login />} />
-        <Route path={"/signup"} element={<SignUp />} />
+        <Route path={"/signup"} element={<SignUp />} /> */}
       </Routes>
     </BrowserRouter>
   </div>
