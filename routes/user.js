@@ -1,12 +1,15 @@
 const express = require('express');
 
 const UserModel = require('./model/user.model');
+const BookModel = require('./model/book.model');
 const jwt = require('jsonwebtoken');
 const auth_middleware = require('./middleware/auth_middleware');
 const router = express.Router();
 
-router.post('/authenticate', function(request, response) {
-    const {username, password} = request.body;
+
+// login user 
+router.post('/authenticate', function (request, response) {
+    const { username, password } = request.body;
 
     return UserModel.getUserByUserName(username)
         .then(user => {
@@ -17,9 +20,9 @@ router.post('/authenticate', function(request, response) {
                 const token = jwt.sign(payload, "SUPER_SECRET", {
                     expiresIn: '14d'
                 });
-                return response.cookie('token', token, {httpOnly: true})
-                    .status(200).send({username});
-            } 
+                return response.cookie('token', token, { httpOnly: true })
+                    .status(200).send({ username });
+            }
 
             return response.status(401).send("Invalid password");
         })
@@ -28,34 +31,26 @@ router.post('/authenticate', function(request, response) {
         })
 })
 
-router.post('/logout', auth_middleware, function(request, response) {
+
+// logout user. 
+router.post('/logout', auth_middleware, function (request, response) {
     const token = jwt.sign({}, "SUPER_SECRET", {
         expiresIn: '0d'
     });
-    
-    return response.cookie('token', token, {httpOnly: true})
+
+    return response.cookie('token', token, { httpOnly: true })
         .status(200).send();
-})
+});
 
-router.get('/isLoggedIn', auth_middleware, function(request, response) {
-    return response.status(200).send({username: request.username});
-})
 
-router.get('/:username', function(request, response) {
+// check if user is logged in. 
+router.get('/isLoggedIn', auth_middleware, function (request, response) {
+    return response.status(200).send({ username: request.username });
+});
 
-    const username = request.params.username
-
-    return UserModel.getUserByUserName(username)
-        .then(user => {
-                response.status(200).send(user);
-        })
-        .catch(error => {
-            response.status(400).send(error);
-        })
-})
-
-router.post('/', function(request, response) {
-    const {username, password} = request.body;
+// create a new user
+router.post('/', function (request, response) {
+    const { username, password } = request.body;
 
     if (!username || !password) {
         response.status(401).send("Missing username or password argument")
@@ -63,28 +58,43 @@ router.post('/', function(request, response) {
 
     const user = {
         username,
-        password 
+        password
     }
 
     return UserModel.createUser(user)
         .then(dbResponse => {
+            const username = dbResponse.username
+            const token = jwt.sign(payload, "SUPER_SECRET", {
+                expiresIn: '14d'
+            });
+            return response.cookie('token', token, { httpOnly: true })
+                .status(200).send({ username });
 
-            if (dbResponse.password === password) {
-                const payload = {
-                    username: username,
-                };
-                const token = jwt.sign(payload, "SUPER_SECRET", {
-                    expiresIn: '14d'
-                });
-                return response.cookie('token', token, {httpOnly: true})
-                    .status(200).send({username});
-            } 
-
-            return response.status(401).send("Invalid password");
         })
         .catch(error => {
             response.status(400).send(`New Error: ${error}`)
         })
+});
+
+
+// authenticated access
+
+// get posts by a specific user
+router.get('/:userId/book', function (request, response) {
+    const userId = request.params.userId;
+
+    if (!userId) {
+        response.status(400).send("invalid user id");
+        return;
+    }
+
+    return BookModel.getBooksByUserId(userId)
+        .then(dbResponse => {
+            response.status(200).send(dbResponse);
+        })
+        .catch(error => {
+            response.status(500).send(error);
+        });
 });
 
 module.exports = router;

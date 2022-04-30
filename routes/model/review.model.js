@@ -10,7 +10,7 @@ function createReview(review) {
 
 function getReviewsByUsername() {
     // return ReviewModel.find({
-        
+
     // }).exec();
 }
 
@@ -22,9 +22,17 @@ function getReviewById(id) {
     return ReviewModel.findById(id).exec();
 }
 
+function getReviewByBookId(bookId) {
+    const query = {
+        bookId
+    }
+    return ReviewModel.find(query).exec();
+}
+
 module.exports = {
     createReview,
     getAllReviews,
     getReviewById,
     getReviewsByUsername,
+    getReviewByBookId,
 }

@@ -34,7 +34,7 @@ app.use(cors({
 // app.use(auth_middleware);
 app.use('/api/review', reviewRouter);
 app.use('/api/home', homeRouter);
-app.use('/api/book', homeRouter);
+app.use('/api/book', bookRouter);
 app.use('/api/user', userRouter);
 
 app.get('*', function (req, res) {
