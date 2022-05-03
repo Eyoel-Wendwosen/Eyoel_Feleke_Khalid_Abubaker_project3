@@ -1,0 +1,27 @@
+.navbar-section {
+  background-color: #417d7a;
+}
+
+.logo {
+  margin: 0;
+}
+
+.top-section {
+  margin-bottom: 1em;
+}
+
+.nav-links {
+  margin-right: 2em;
+}
+
+.search-btn {
+  background-color: #1a3c40;
+  color: white;
+  border-color: #1a3c40;
+  width: 6em;
+}
+
+.search-btn:hover {
+  background-color: #1d5c63;
+  border-color: #1d5c63;
+}
