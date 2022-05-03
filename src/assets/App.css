@@ -1,6 +1,7 @@
 @import url(NavBar.css);
 @import url(Book.css);
 @import url(Home.css);
+@import url(BookDisplay.css);
 
 * {
   padding: 0;
