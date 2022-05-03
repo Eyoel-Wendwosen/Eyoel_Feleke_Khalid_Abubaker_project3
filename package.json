@@ -5,6 +5,7 @@
   "dependencies": {
     "axios": "^0.26.1",
     "bootstrap": "^5.1.3",
+    "bcrypt": "^5.0.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "express": "^4.17.3",
@@ -24,7 +25,7 @@
     "nodemon": "^2.0.15"
   },
   "scripts": {
-    "devstart": "concurrently \"nodemon ./server.js\" \"react-scripts start\"",
+    "devstart": "source dev.env; concurrently \"nodemon ./server.js\" \"react-scripts start\"",
     "start": "node ./server.js",
     "reactstart": "react-scripts start",
     "build": "react-scripts build",

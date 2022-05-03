@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router';
 
 export default function SignUp(props) {
 
-
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
