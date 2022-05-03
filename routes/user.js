@@ -1,39 +1,49 @@
 const express = require('express');
-
+const bcrypt = require('bcrypt');
 const UserModel = require('./model/user.model');
 const BookModel = require('./model/book.model');
 const jwt = require('jsonwebtoken');
 const auth_middleware = require('./middleware/auth_middleware');
 const router = express.Router();
 
+const saltRounds = 10;
 
 // login user 
 router.post('/authenticate', function (request, response) {
-    const { username, password } = request.body;
+    const { username, password } = request.body.user;
+    console.log(password);
 
     return UserModel.getUserByUserName(username)
         .then(user => {
-            if (user.password === password) {
+            const hashedPassword = user.password;
+            bcrypt.compare(password, hashedPassword, function (err, success) {
+                if (err || !success) {
+                    response.status(401).send("Error: username or password not correct");
+                    return;
+                }
+
                 const payload = {
-                    username: username,
+                    userId: user._id,
+                    username: user.username
                 };
+                // TODO: change with env variable
                 const token = jwt.sign(payload, "SUPER_SECRET", {
                     expiresIn: '14d'
                 });
                 return response.cookie('token', token, { httpOnly: true })
-                    .status(200).send({ username });
-            }
+                    .status(200).send(payload);
 
-            return response.status(401).send("Invalid password");
+            });
         })
         .catch(error => {
-            response.status(400).send("There was an error");
-        })
-})
+            response.status(400).send(error);
+        });
+});
 
 
 // logout user. 
 router.post('/logout', auth_middleware, function (request, response) {
+    // TODO: change with env variable
     const token = jwt.sign({}, "SUPER_SECRET", {
         expiresIn: '0d'
     });
@@ -45,45 +55,63 @@ router.post('/logout', auth_middleware, function (request, response) {
 
 // check if user is logged in. 
 router.get('/isLoggedIn', auth_middleware, function (request, response) {
-    return response.status(200).send({ username: request.username });
+    const userDetail = {
+        username: request.username,
+        userId: request.userId
+    }
+    return response.status(200).send(userDetail);
 });
 
 // create a new user
 router.post('/', function (request, response) {
-    const { username, password } = request.body;
+    const { username, password } = request.body.user;
 
     if (!username || !password) {
         response.status(401).send("Missing username or password argument")
     }
 
-    const user = {
-        username,
-        password
-    }
+    // TODO: change with env variable
+    // hash password
+    bcrypt.hash(password, saltRounds, function (err, hashedPassword) {
+        if (err) {
+            return response.status(500).send(err);
+        }
 
-    return UserModel.createUser(user)
-        .then(dbResponse => {
-            const username = dbResponse.username
-            const token = jwt.sign(payload, "SUPER_SECRET", {
-                expiresIn: '14d'
+        const user = {
+            ...request.body.user,
+            password: hashedPassword
+        }
+
+        return UserModel.createUser(user)
+            .then(dbResponse => {
+                const username = dbResponse.username
+                const payload = {
+                    username: dbResponse.username,
+                    userId: dbResponse._id
+                }
+                // TODO: change with env variable
+                const token = jwt.sign(payload, "SUPER_SECRET", {
+                    expiresIn: '14d'
+                });
+                return response.cookie('token', token, { httpOnly: true })
+                    .status(200).send(payload);
+
+            })
+            .catch(error => {
+                response.status(400).send(`New Error: ${error}`)
             });
-            return response.cookie('token', token, { httpOnly: true })
-                .status(200).send({ username });
-
-        })
-        .catch(error => {
-            response.status(400).send(`New Error: ${error}`)
-        })
+    });
 });
 
 
 // authenticated access
 
 // get posts by a specific user
-router.get('/:userId/book', function (request, response) {
+router.get('/:userId/book', auth_middleware, function (request, response) {
+
     const userId = request.params.userId;
 
-    if (!userId) {
+    if (!userId && request.user) {
         response.status(400).send("invalid user id");
         return;
     }

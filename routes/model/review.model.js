@@ -8,10 +8,21 @@ function createReview(review) {
     return ReviewModel.create(review);
 }
 
-function getReviewsByUsername() {
-    // return ReviewModel.find({
+function editReviewById(reviewId, review) {
+    const query = {
+        _id: reviewId
+    };
 
-    // }).exec();
+    return ReviewModel.findOneAndUpdate(query, review).exec();
+}
+
+
+function removeReviewById(reviewId) {
+    const query = {
+        _id: reviewId
+    }
+
+    return ReviewModel.findOneAndDelete(query).exec();
 }
 
 function getAllReviews() {
@@ -24,15 +35,17 @@ function getReviewById(id) {
 
 function getReviewByBookId(bookId) {
     const query = {
-        bookId
+        bookId: bookId
     }
+
     return ReviewModel.find(query).exec();
 }
 
 module.exports = {
     createReview,
+    editReviewById,
+    removeReviewById,
     getAllReviews,
     getReviewById,
-    getReviewsByUsername,
-    getReviewByBookId,
+    getReviewByBookId
 }

@@ -6,21 +6,22 @@ const cookieParser = require("cookie-parser");
 
 const app = express();
 
-const homeRouter = require("./routes/home");
-const reviewRouter = require("./routes/review");
-const bookRouter = require("./routes/book");
-const userRouter = require("./routes/user");
+const reviewRouter = require('./routes/review');
+const bookRouter = require('./routes/book');
+const userRouter = require('./routes/user');
 
-const mongooseEnpoint = "mongodb://127.0.0.1/book_reviews";
+const mongooseEndpoint = 'mongodb://127.0.0.1/book_reviews';
 
-mongoose.connect(mongooseEnpoint, { useNewUrlParser: true });
+// const mongodDBAtlasUrl = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@bookreview.2hzup.mongodb.net/book_review?retryWrites=true&w=majority`;
+const mongodDBAtlasUrl = `mongodb+srv://rootuser:rootpass@bookreview.2hzup.mongodb.net/book_review?retryWrites=true&w=majority`;
+
+mongoose.connect(mongodDBAtlasUrl, { useNewUrlParser: true });
 
 const db = mongoose.connection;
 
 db.on("error", console.error.bind(console, "Error connecting to MongoDB:"));
 
-const cors = require("cors");
-const auth_middleware = require("./routes/middleware/auth_middleware");
+const cors = require('cors');
 
 app.use(express.static(path.join(__dirname, "build")));
 
@@ -35,10 +36,9 @@ app.use(
 );
 
 // app.use(auth_middleware);
-app.use("/api/review", reviewRouter);
-app.use("/api/home", homeRouter);
-app.use("/api/book", bookRouter);
-app.use("/api/user", userRouter);
+app.use('/api/review', reviewRouter);
+app.use('/api/book', bookRouter);
+app.use('/api/user', userRouter);
 
 app.get("*", function (req, res) {
   res.sendFile(path.join(__dirname, "build", "index.html"));
