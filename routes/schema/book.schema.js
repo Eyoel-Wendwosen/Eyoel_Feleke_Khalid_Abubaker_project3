@@ -2,6 +2,7 @@ const Schema = require('mongoose').Schema;
 
 const BookSchema = new Schema({
     name: String,
+    description: String,
     author: String,
     imageUrl: String,
     genre: String,

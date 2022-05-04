@@ -85,6 +85,34 @@ router.put("/:bookId", auth_middleware, function (request, response) {
           });
       } else {
         response.status(401).send("Unauthorized access");
+        });
+});
+
+router.get('/search', function (request, response) {
+    const query = request.query.query;
+
+    if (!query) {
+        response.status(200).send([]);
+        return;
+    }
+
+    return BookModel.searchBook(query)
+        .then(dbResponse => {
+            response.status(200).send(dbResponse);
+        })
+        .catch(error => {
+            response.status(500).send(error);
+        });
+});
+
+// Authorized accesses 
+// create book 
+router.post('/', auth_middleware, function (request, response) {
+    const book = request.body.book;
+    const userId = request.userId;
+
+    if (!book) {
+        response.status(400).send("incorrect book argument");
         return;
       }
     })

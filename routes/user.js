@@ -6,7 +6,9 @@ const jwt = require('jsonwebtoken');
 const auth_middleware = require('./middleware/auth_middleware');
 const router = express.Router();
 
+
 const saltRounds = 10;
+const SUPER_SECRET = process.env.SECRET
 
 // login user 
 router.post('/authenticate', function (request, response) {
@@ -26,8 +28,7 @@ router.post('/authenticate', function (request, response) {
                     userId: user._id,
                     username: user.username
                 };
-                // TODO: change with env variable
-                const token = jwt.sign(payload, "SUPER_SECRET", {
+                const token = jwt.sign(payload, SUPER_SECRET, {
                     expiresIn: '14d'
                 });
                 return response.cookie('token', token, { httpOnly: true })
@@ -43,8 +44,7 @@ router.post('/authenticate', function (request, response) {
 
 // logout user. 
 router.post('/logout', auth_middleware, function (request, response) {
-    // TODO: change with env variable
-    const token = jwt.sign({}, "SUPER_SECRET", {
+    const token = jwt.sign({}, SUPER_SECRET, {
         expiresIn: '0d'
     });
 
@@ -70,7 +70,6 @@ router.post('/', function (request, response) {
         response.status(401).send("Missing username or password argument")
     }
 
-    // TODO: change with env variable
     // hash password
     bcrypt.hash(password, saltRounds, function (err, hashedPassword) {
         if (err) {
@@ -89,8 +88,7 @@ router.post('/', function (request, response) {
                     username: dbResponse.username,
                     userId: dbResponse._id
                 }
-                // TODO: change with env variable
-                const token = jwt.sign(payload, "SUPER_SECRET", {
+                const token = jwt.sign(payload, SUPER_SECRET, {
                     expiresIn: '14d'
                 });
                 return response.cookie('token', token, { httpOnly: true })
