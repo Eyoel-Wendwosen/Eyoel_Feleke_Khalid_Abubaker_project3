@@ -13,7 +13,11 @@ const BookSchema = new Schema({
         default: Date.now,
     },
     rating: Number,
-    ownerId: String
+    ownerId: String,
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
 }, {
     collection: 'book',
 })

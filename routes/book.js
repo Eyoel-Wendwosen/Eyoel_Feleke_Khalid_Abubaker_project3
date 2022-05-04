@@ -21,6 +21,7 @@ router.get('/', function (request, response) {
 
 // get book by bookId
 router.get('/:bookId', function (request, response) {
+    request.query
     const bookId = request.params.bookId;
 
     if (!bookId || bookId === '') {

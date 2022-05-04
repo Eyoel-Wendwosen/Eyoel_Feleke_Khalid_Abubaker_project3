@@ -6,7 +6,11 @@ const ReviewSchema = new Schema({
     imageUrl: String,
     rating: Number,
     bookId: String,
-    ownerId: String
+    ownerId: String,
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
 }, {
     collection: 'review',
 })
