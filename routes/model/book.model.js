@@ -36,11 +36,30 @@ function removeBookById(id) {
     return BookModel.findOneAndDelete(id).exec();
 }
 
+function searchBook(query) {
+    const pipeline = [
+        {
+            $search: {
+                index: "searchBook",
+                text: {
+                    query: query,
+                    path: {
+                        'wildcard': "*"
+                    }
+                }
+            }
+        }
+    ]
+
+    return BookModel.aggregate(pipeline).exec();
+}
+
 module.exports = {
     createBook,
     editBookById,
     removeBookById,
     getAllBooks,
     getBookById,
-    getBooksByUserId
+    getBooksByUserId,
+    searchBook
 }

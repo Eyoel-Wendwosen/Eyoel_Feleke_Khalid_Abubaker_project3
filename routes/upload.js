@@ -27,7 +27,7 @@ const upload = multer({
 
 router.post('/', auth_middleware, upload.single('image'), function (request, response) {
     return response.status(200).send({
-        url: request.file
+        url: request.file.location
     });
 });
 

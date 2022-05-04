@@ -36,6 +36,22 @@ router.get('/:bookId', function (request, response) {
         });
 });
 
+router.get('/search', function (request, response) {
+    const query = request.query.query;
+
+    if (!query) {
+        response.status(200).send([]);
+        return;
+    }
+
+    return BookModel.searchBook(query)
+        .then(dbResponse => {
+            response.status(200).send(dbResponse);
+        })
+        .catch(error => {
+            response.status(500).send(error);
+        });
+});
 
 // Authorized accesses 
 // create book 
