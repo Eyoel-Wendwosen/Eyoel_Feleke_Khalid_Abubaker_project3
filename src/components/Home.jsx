@@ -21,7 +21,7 @@ const Home = () => {
   console.log(books);
   const getBooks = () => {
     return books.map((book) => (
-      <Link to={`/Book/${book._id}`} className="">
+      <Link to={`/Book/${book._id}`}>
         <Book book={book} />
       </Link>
     ));
