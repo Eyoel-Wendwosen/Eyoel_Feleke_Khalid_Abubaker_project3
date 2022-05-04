@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import { useParams } from "react-router";
-import { Container } from "react-bootstrap";
+import { Container, Form, Button } from "react-bootstrap";
 import Review from "./Review";
 
 const BookDisplay = () => {
@@ -27,6 +27,11 @@ const BookDisplay = () => {
   const getReviews = () => {
     return reviews.map((review) => <Review review={review} />);
   };
+
+  function submitReview() {
+    // Axios.post() {
+    // }
+  }
 
   if (!book || !reviews) {
     return <div>Page loading...</div>;
@@ -75,9 +80,31 @@ const BookDisplay = () => {
       </Container>
 
       <Container>
-        <h2>Reviews</h2>
+        <div className="reviews-top">
+          <h2>Reviews</h2>
+          <hr />
+        </div>
+
+        <div>
+          <h5>Add a written Review</h5>
+          <Form>
+            <fieldset>
+              <Form.Group className="mb-3">
+                <Form.Control
+                  as="textarea"
+                  id="disabledTextInput"
+                  placeholder="Disabled input"
+                />
+              </Form.Group>
+              <Button onClick={submitReview}>Submit</Button>
+            </fieldset>
+          </Form>
+        </div>
+
         <div className="reviews-wrapper">
           {getReviews()}
+          <Review></Review>
+          <Review></Review>
           <Review></Review>
         </div>
       </Container>

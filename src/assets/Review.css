@@ -1,2 +1,59 @@
 .reviews-wrapper {
+  overflow: hidden;
+  height: auto;
+  /* width: auto; */
+  /* border: 1px solid black; */
+  /* background-color: white; */
+  /* border-radius: 0.3em; */
+  /* box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); */
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  /* justify-content: space-between; */
+  /* align-items: center; */
+  /* flex-grow: 1; */
+  /* color: black; */
+  margin: 4em 0;
+  padding: 0;
+}
+
+.review {
+  color: black;
+  border: 1px solid black;
+  background-color: #ede6db;
+  border-radius: 0.3em;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  padding: 1em;
+  height: 12em;
+  padding-bottom: 0.5em;
+  /* overflow: hidden; */
+}
+
+.avatar-bordered {
+  width: 2em;
+  height: 2em;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  border: white 1px solid;
+}
+
+.review-user p {
+  padding: 0;
+  margin: 0;
+}
+
+.reviews-top {
+  color: black;
+}
+
+.logged-user-btn {
+  background-color: #1a3c40;
+  color: white;
+  border-color: #1a3c40;
+  margin-bottom: 0;
+}
+
+.logged-user-btn:hover {
+  background-color: #1d5c63;
+  border-color: #1d5c63;
 }

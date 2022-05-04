@@ -2,7 +2,7 @@
 @import url(Book.css);
 @import url(Home.css);
 @import url(BookDisplay.css);
-
+@import url(Review.css);
 * {
   padding: 0;
   margin: 0;
