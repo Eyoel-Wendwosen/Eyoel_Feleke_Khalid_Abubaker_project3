@@ -13,17 +13,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { loggedIn } from "../reducers/authReducer";
 
 const NavBar = () => {
-  // const [user, setUser] = useState(undefined);
   const logged = useSelector((state) => state.auth.value);
   const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   Axios.get("/api/user/isLoggedIn").then(function (response) {
-  //     console.log(logged);
-  //     // setUser(response.data);
-  //     // dispatch(loggedIn(response.data));
-  //   });
-  // }, [dispatch, logged]);
 
   function logoff() {
     Axios.post("/api/user/logout")
@@ -35,7 +26,6 @@ const NavBar = () => {
       });
   }
 
-  console.log(logged, "this is the logged user");
   return (
     <>
       <Navbar
