@@ -1,11 +1,26 @@
 const express = require("express");
+const Realm = require('realm');
 
 const BookModel = require("./model/book.model");
+const UserModel = require("./model/user.model");
 const ReviewModel = require("./model/review.model");
 
 const router = express.Router();
 
 const auth_middleware = require('./middleware/auth_middleware');
+// mongodDB atlas realm app
+
+const realmAppId = process.env.REALM_APP_ID;
+const RealmApp = new Realm.App({ id: realmAppId });
+const credentials = Realm.Credentials.anonymous();
+let realmUser;
+try {
+    (async () => {
+        realmUser = await RealmApp.logIn(credentials);
+    })();
+} catch (err) {
+    console.error("Failed to log in", err);
+}
 
 
 // get all books 
@@ -15,6 +30,40 @@ router.get('/', function (request, response) {
             response.status(200).send(allBooks);
         })
         .catch(error => {
+            response.status(500).send(error);
+        });
+});
+
+router.get('/search', function (request, response) {
+    const searchTerm = request.query.term;
+
+    if (!searchTerm) {
+        response.status(200).send([]);
+        return;
+    }
+
+    return realmUser.functions.searchBooks(searchTerm)
+        .then(dbResponse => {
+            response.status(200).send(dbResponse);
+        }).catch(error => {
+            response.status(500).send(error);
+        });
+
+});
+
+
+router.get('/autocomplete', function (request, response) {
+    const searchTerm = request.query.term;
+
+    if (!searchTerm) {
+        response.status(200).send([]);
+        return;
+    }
+
+    return realmUser.functions.searchAutoComplete(searchTerm)
+        .then(dbResponse => {
+            response.status(200).send(dbResponse);
+        }).catch(error => {
             response.status(500).send(error);
         });
 });
@@ -37,22 +86,7 @@ router.get('/:bookId', function (request, response) {
         });
 });
 
-router.get('/search', function (request, response) {
-    const query = request.query.query;
 
-    if (!query) {
-        response.status(200).send([]);
-        return;
-    }
-
-    return BookModel.searchBook(query)
-        .then(dbResponse => {
-            response.status(200).send(dbResponse);
-        })
-        .catch(error => {
-            response.status(500).send(error);
-        });
-});
 
 // Authorized accesses 
 // create book 
@@ -71,8 +105,18 @@ router.post('/', auth_middleware, function (request, response) {
     }
 
     return BookModel.createBook(newBook)
-        .then(dbResponse => {
-            response.status(200).send(dbResponse);
+        .then((dbResponse) => {
+            return dbResponse;
+        })
+        .then(async newBook => {
+            const user = await UserModel.getUserByUserId(userId);
+            if (user) {
+                const update = {
+                    numberOfListing: user.numberOfListing ? user.numberOfListing + 1 : 1
+                }
+                await UserModel.editUserById(userId, update);
+            }
+            response.status(200).send(newBook);
         })
         .catch(error => {
             response.status(500).send(error)

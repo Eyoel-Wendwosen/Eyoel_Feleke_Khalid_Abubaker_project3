@@ -102,6 +102,23 @@ router.post('/', function (request, response) {
 });
 
 
+router.get('/:userId', function (request, response) {
+    const userId = request.params.userId;
+    if (!userId) {
+        response.status(400).send("invalid user id");
+        return;
+    }
+    
+    return UserModel.getUserByUserId(userId)
+        .then(dbResponse => {
+            response.status(200).send(dbResponse);
+        })
+        .catch(error => {
+            response.status(500).send(error);
+        });
+
+    
+});
 // authenticated access
 
 // get posts by a specific user
@@ -109,7 +126,7 @@ router.get('/:userId/book', auth_middleware, function (request, response) {
 
     const userId = request.params.userId;
 
-    if (!userId && request.user) {
+    if (!userId) {
         response.status(400).send("invalid user id");
         return;
     }

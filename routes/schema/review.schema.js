@@ -4,7 +4,10 @@ const ReviewSchema = new Schema({
     subject: String,
     text: String,
     imageUrl: String,
-    rating: Number,
+    rating: {
+        type: Number,
+        default: 0
+    },
     bookId: String,
     ownerId: String,
     createdAt: {

@@ -107,4 +107,7 @@ dist
 # DS_Store
 *.DS_Store
 
+# environment variables
 *.env
+
+mongodb-realm/
