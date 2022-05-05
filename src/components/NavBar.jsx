@@ -1,5 +1,5 @@
 import Axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import {
   Container,
@@ -10,7 +10,8 @@ import {
   Button,
   Row,
   Col,
-  Image
+  Image,
+  NavDropdown,
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -22,8 +23,6 @@ const NavBar = () => {
   const logged = useSelector((state) => state.auth.value);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-
 
   useEffect(() => {
     Axios.get("/api/user/isLoggedIn").then(function (response) {
@@ -46,10 +45,10 @@ const NavBar = () => {
     setSearchTerm(e.target.value);
     const url = `/api/book/autocomplete?term=${e.target.value}`;
     Axios.get(url)
-      .then(response => {
+      .then((response) => {
         setSearchResult(response.data);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   }
@@ -88,48 +87,90 @@ const NavBar = () => {
               </Nav>
             ) : (
               <Nav className="nav-links">
+                {/* <NavDropdown
+                  id="nav-dropdown-dark-example"
+                  title="Dropdown"
+                  menuVariant="dark"
+                >
+                  <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
+                  <NavDropdown.Item href="#action/3.2">
+                    Another action
+                  </NavDropdown.Item>
+                  <NavDropdown.Item href="#action/3.3">
+                    Something
+                  </NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item href="#action/3.4">
+                    Separated link
+                  </NavDropdown.Item>
+                </NavDropdown> */}
                 <Nav.Link onClick={logoff}>Log Out</Nav.Link>
                 <Nav.Link as={Link} to={"/CreatePost"}>
                   Add a book
                 </Nav.Link>
               </Nav>
             )}
-
-            <Form className="d-flex">
-              <FormControl
-                onChange={e => handleSearchInput(e)}
-                type="search"
-                placeholder="Search"
-                value={searchTerm}
-                className="me-2"
-                aria-label="Search"
-              />
-              <Button className="search-btn" variant="outline-success">
+            <div className="search-box">
+              <Form className="d-flex">
+                <FormControl
+                  onChange={(e) => handleSearchInput(e)}
+                  type="search"
+                  placeholder="Search"
+                  value={searchTerm}
+                  className="me-2"
+                  aria-label="Search"
+                />
+                {/* <Button className="search-btn" variant="outline-success">
                 Search
-              </Button>
-            </Form>
+              </Button> */}
+              </Form>
+              {/* <Container className="search-box-items ">
+                {searchResult.length > 0 && (
+                  <div>
+                    {searchResult.slice(0, 7).map((book) => {
+                      return (
+                        <div
+                          onClick={() => handleSelection(book)}
+                          key={book._id}
+                        >
+                          <Container>
+                            <Row>
+                              <Col xs={2}>
+                                <Image
+                                  className="search-result-image"
+                                  src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1388800064l/9648068.jpg"
+                                  // thumbnail={true}
+                                />
+                              </Col>
+                              <Col>
+                                <p className="book-title">{book.name}</p>
+                                <p className="book-author">By: {book.author}</p>
+                              </Col>
+                            </Row>
+                          </Container>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </Container> */}
+            </div>
           </Navbar.Collapse>
         </Container>
       </Navbar>
-      <Container className="position-absolute start-50 z-100 search-result">
-        {/* <Row>
-          <Col lg="7" xl="10"></Col>
-          <Col> */}
-        {searchResult.length > 0 &&
+      <Container className="position-absoulte start-50 z-100 search-result">
+        {searchResult.length > 0 && (
           <ul>
-            {searchResult.slice(0, 7).map(book => {
+            {searchResult.slice(0, 7).map((book) => {
               return (
-                <li
-                  onClick={() => handleSelection(book)}
-                  key={book._id}
-                >
+                <li onClick={() => handleSelection(book)} key={book._id}>
                   <Container>
-                    <Row >
+                    <Row>
                       <Col xs={2}>
                         <Image
                           className="search-result-image"
                           src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1388800064l/9648068.jpg"
-                        // thumbnail={true}
+                          // thumbnail={true}
                         />
                       </Col>
                       <Col>
@@ -138,12 +179,11 @@ const NavBar = () => {
                       </Col>
                     </Row>
                   </Container>
-                </li>)
+                </li>
+              );
             })}
           </ul>
-        }
-        {/* </Col>
-        </Row> */}
+        )}
       </Container>
     </>
   );

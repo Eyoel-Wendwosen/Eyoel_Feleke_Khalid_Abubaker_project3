@@ -4,18 +4,18 @@ import { useParams } from "react-router";
 import { Container, Form, Button } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import Review from "./Review";
+import { Rating } from "react-simple-star-rating";
 
 const BookDisplay = () => {
   const logged = useSelector((state) => state.auth.value);
   const [book, setBook] = useState(undefined);
   const [reviews, setReviews] = useState(undefined);
   const params = useParams();
-  //   console.log(params);
 
   const [newReview, setNewReview] = useState({
     subject: "",
     text: "",
-    rating: "",
+    rating: 0,
     bookId: params.id,
     ownerId: logged.userId,
   });
@@ -37,14 +37,7 @@ const BookDisplay = () => {
     if (!logged) {
       return;
     }
-    // setNewReview((prev) => ({
-    //   ...prev,
-    //   review: {
-    //     ...prev,
-    //     bookId: params.id,
-    //     ownerId: logged.userId,
-    //   },
-    // }));
+
     Axios.post("/api/review/", {
       review: { ...newReview, bookId: params.id, ownerId: logged.userId },
     })
@@ -63,38 +56,21 @@ const BookDisplay = () => {
     return reviews.map((review) => <Review review={review} />);
   };
 
-  //   subject: String,
-  // text: String,
-  // imageUrl: String,
-  // rating: {
-  //     type: Number,
-  //     default: 0
-  // },
-  // bookId: String,
-  // ownerId: String,
-  // createdAt: {
-  //     type: Date,
-  //     default: Date.now
-
   if (!book || !reviews) {
     return <div>Page loading...</div>;
   }
 
-  //   name: String,
-  // author: String,
-  // imageUrl: String,
-  // genre: String,
-  // pageCount: Number,
-  // language: String,
-  // year: {
-  //     type: Date,
-  //     default: Date.now,
-  // },
-  // rating: Number,
-  // ownerId: String
-
   const bookYear = new Date(book.year);
   const year = bookYear.getFullYear();
+
+  const handleRating = (rate) => {
+    setNewReview((prev) => ({
+      ...prev,
+      rating: rate / 2 / 10,
+    }));
+  };
+
+  console.log(reviews);
 
   return (
     <>
@@ -105,13 +81,14 @@ const BookDisplay = () => {
             <div className="left-book-info">
               <h2>{book.name}</h2>
               <h5>By {book.author}</h5>
-              <p className="book-desc">
-                {/* Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Facilis reprehenderit veniam, dicta nesciunt beatae porro
-                praesentium dolorem inventore rem iusto nam vero quo fuga ipsa
-                esse, ut hic excepturi? Atque! */}
-                {book.description}
-              </p>
+              <Rating
+                size="1.5em"
+                readonly="true"
+                allowHalfIcon="true"
+                initialValue={book.rating}
+                // ratingValue="2"
+              ></Rating>
+              <p className="book-desc">{book.description}</p>
             </div>
             <div className="right-book-info">
               <p>Genre: {book.genre}</p>
@@ -133,6 +110,18 @@ const BookDisplay = () => {
           <h5>Add a written Review</h5>
           <Form>
             <fieldset disabled={!logged ? true : false}>
+              <Form.Group className="mb-1">
+                <Form.Control
+                  type="text"
+                  placeholder="subject"
+                  onChange={(e) =>
+                    setNewReview((prev) => ({
+                      ...prev,
+                      subject: e.target.value,
+                    }))
+                  }
+                />
+              </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Control
                   as="textarea"
@@ -150,7 +139,21 @@ const BookDisplay = () => {
                   }
                 />
               </Form.Group>
-              <Button className="logged-user-btn" onClick={submitReview}>
+              <Form.Group>
+                <Rating
+                  size="2em"
+                  allowHalfIcon="true"
+                  onClick={handleRating}
+                  readonly={!logged ? true : false}
+                  initialValue={0}
+                  // ratingValue={rate}
+                ></Rating>
+              </Form.Group>
+              <Button
+                className="logged-user-btn"
+                type="reset"
+                onClick={submitReview}
+              >
                 Submit
               </Button>
             </fieldset>

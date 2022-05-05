@@ -3,6 +3,7 @@
 @import url(Home.css);
 @import url(BookDisplay.css);
 @import url(Review.css);
+@import url(BookForm.css);
 * {
   padding: 0;
   margin: 0;

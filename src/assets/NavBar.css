@@ -26,10 +26,10 @@
   border-color: #1d5c63;
 }
 
-
 .search-result {
   background-color: antiquewhite;
-  width: 40%;
+  /* width: 40%; */
+  width: 100%;
 }
 
 .search-result ul {
@@ -57,4 +57,24 @@
 .book-author {
   font-size: 14px;
   font-style: italic;
+}
+
+.search-box {
+  position: relative;
+}
+
+.search-box-items {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  border-bottom: none;
+  border-top: none;
+  z-index: 500;
+  /* height: 20vh; */
+  /* overflow: visible; */
+  /*position the autocomplete items to be the same width as the container:*/
+  top: 100%;
+  left: 0;
+  right: 0;
+  color: black;
+  background-color: antiquewhite;
 }

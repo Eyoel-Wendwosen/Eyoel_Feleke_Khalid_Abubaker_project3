@@ -1,14 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { Container, Button } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import Axios from "axios";
+import { Rating } from "react-simple-star-rating";
 const Review = (props) => {
   const logged = useSelector((state) => state.auth.value);
   // console.log(props.review.ownerId, logged);
+  const [deleted, setDeleted] = useState(false);
 
   function deleteReview() {
     Axios.delete("/api/review/" + props.review._id)
-      .then(function (response) {})
+      .then(function (response) {
+        setDeleted(true);
+      })
       .catch(function (error) {
         console.log(error);
       });
@@ -17,7 +21,18 @@ const Review = (props) => {
     <Container>
       <div className="review d-flex flex-column justify-content-between">
         <div>
-          <h4>{props.review.subject}</h4>
+          <div className="d-flex justify-content-between">
+            <h4>{props.review.subject}</h4>
+
+            <Rating
+              size="1.5em"
+              readonly="true"
+              allowHalfIcon="true"
+              initialValue={props.review.rating}
+              // ratingValue="2"
+            ></Rating>
+          </div>
+
           <hr />
           <p>{props.review.text}</p>
         </div>
