@@ -33,11 +33,7 @@
     "nodemon": "^2.0.15"
   },
   "scripts": {
-<<<<<<< HEAD
-    "devstart": "source .env; concurrently \"nodemon ./server.js\" \"react-scripts start\"",
-=======
     "devstart": "concurrently \"nodemon ./server.js\" \"react-scripts start\"",
->>>>>>> 2e913f113e1cece401063c771cb2f09767475060
     "start": "node ./server.js",
     "reactstart": "react-scripts start",
     "build": "react-scripts build",
