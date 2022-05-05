@@ -17,7 +17,7 @@ export default function Login(props) {
       .then((response) => {
         dispatch(loggedIn(response));
         console.log(logged);
-        navigate("/");
+        navigate(-1);
       })
       .catch((error) => console.log(error));
   }

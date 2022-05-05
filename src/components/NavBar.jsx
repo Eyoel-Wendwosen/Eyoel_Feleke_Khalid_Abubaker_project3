@@ -16,6 +16,12 @@ const NavBar = () => {
   const logged = useSelector((state) => state.auth.value);
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    Axios.get("/api/user/isLoggedIn").then(function (response) {
+      dispatch(loggedIn(response.data));
+    });
+  }, [dispatch]);
+
   function logoff() {
     Axios.post("/api/user/logout")
       .then(function (response) {
@@ -55,6 +61,9 @@ const NavBar = () => {
             ) : (
               <Nav className="nav-links">
                 <Nav.Link onClick={logoff}>Log Out</Nav.Link>
+                <Nav.Link as={Link} to={"/CreatePost"}>
+                  Add a book
+                </Nav.Link>
               </Nav>
             )}
 

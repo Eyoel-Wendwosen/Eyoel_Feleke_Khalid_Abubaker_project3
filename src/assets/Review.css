@@ -57,3 +57,17 @@
   background-color: #1d5c63;
   border-color: #1d5c63;
 }
+
+.logged-user-btn:disabled {
+  background-color: #1a3c40;
+  color: white;
+  border-color: #1a3c40;
+  margin-bottom: 0;
+}
+
+.logged-user-btn:active {
+  background-color: #1a3c40;
+  color: white;
+  border-color: #1a3c40;
+  margin-bottom: 0;
+}
