@@ -8,12 +8,14 @@ import SignUp from "./old/Signup";
 import NavBar from "./old/NavBar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./assets/index.css";
+import { store } from "./app/store";
+import { Provider } from "react-redux";
 
 ReactDOM.render(
   <React.StrictMode>
-    {/* <Provider store={store}> */}
-    <App />
-    {/* </Provider> */}
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>,
   document.getElementById("root")
 );

@@ -71,56 +71,57 @@ router.put("/:bookId", auth_middleware, function (request, response) {
     return;
   }
 
-  BookModel.getBookById(bookId)
-    .then((dbResponse) => {
-      const bookOwner = dbResponse.ownerId;
+  BookModel.getBookById(bookId).then((dbResponse) => {
+    const bookOwner = dbResponse.ownerId;
 
-      if (request.userId === bookOwner) {
-        return BookModel.editBookById(bookId, book)
-          .then((updatedBook) => {
-            response.status(200).send(updatedBook);
-          })
-          .catch((error) => {
-            response.status(500).send(error);
-          });
-      } else {
-        response.status(401).send("Unauthorized access");
-        });
-});
-
-router.get('/search', function (request, response) {
-    const query = request.query.query;
-
-    if (!query) {
-        response.status(200).send([]);
-        return;
-    }
-
-    return BookModel.searchBook(query)
-        .then(dbResponse => {
-            response.status(200).send(dbResponse);
+    if (request.userId === bookOwner) {
+      return BookModel.editBookById(bookId, book)
+        .then((updatedBook) => {
+          response.status(200).send(updatedBook);
         })
-        .catch(error => {
-            response.status(500).send(error);
+        .catch((error) => {
+          response.status(500).send(error);
         });
+    } else {
+      response.status(401).send("Unauthorized access");
+    }
+  });
 });
 
-// Authorized accesses 
-// create book 
-router.post('/', auth_middleware, function (request, response) {
-    const book = request.body.book;
-    const userId = request.userId;
+router.get("/search", function (request, response) {
+  const query = request.query.query;
 
-    if (!book) {
-        response.status(400).send("incorrect book argument");
-        return;
-      }
+  if (!query) {
+    response.status(200).send([]);
+    return;
+  }
+
+  return BookModel.searchBook(query)
+    .then((dbResponse) => {
+      response.status(200).send(dbResponse);
     })
     .catch((error) => {
-      response.status(404).send("book not found");
-      return;
+      response.status(500).send(error);
     });
 });
+
+// Authorized accesses
+// create book
+//   router
+//     .post("/", auth_middleware, function (request, response) {
+//       const book = request.body.book;
+//       const userId = request.userId;
+
+//       if (!book) {
+//         response.status(400).send("incorrect book argument");
+//         return;
+//       }
+//     })
+//     .catch((error) => {
+//       response.status(404).send("book not found");
+//       return;
+//     });
+// });
 
 // delete book
 router.delete("/:bookId", auth_middleware, function (request, response) {
