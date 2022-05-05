@@ -25,3 +25,36 @@
   background-color: #1d5c63;
   border-color: #1d5c63;
 }
+
+
+.search-result {
+  background-color: antiquewhite;
+  width: 40%;
+}
+
+.search-result ul {
+  padding: 0;
+  margin: 0;
+}
+
+.search-result li {
+  padding: 1%;
+  color: #1a3c40;
+}
+
+.search-result li:hover {
+  background-color: #1a3c40;
+  color: white;
+  cursor: pointer;
+}
+
+.search-result-image {
+  height: 75px;
+  margin-right: 10px;
+  border: 1px solid wheat;
+}
+
+.book-author {
+  font-size: 14px;
+  font-style: italic;
+}

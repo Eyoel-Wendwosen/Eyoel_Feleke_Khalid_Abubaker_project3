@@ -24,7 +24,8 @@
 .card-book p {
   font-size: 12px;
   line-height: 1.4;
-  opacity: 0.7;
+  color:rgba(255, 255, 255, 0.7);
+  /* opacity: 0.7; */
   margin-bottom: 0;
   margin-top: 8px;
 }
