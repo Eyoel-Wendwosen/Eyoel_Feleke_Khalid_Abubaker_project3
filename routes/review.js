@@ -2,6 +2,7 @@ const express = require('express');
 const auth_middleware = require('./middleware/auth_middleware');
 
 const ReviewModel = require('./model/review.model');
+const BookModel = require('./model/book.model');
 
 const router = express.Router();
 
@@ -20,11 +21,35 @@ router.get('/:reviewId', function (request, response) {
 });
 
 router.post('/', auth_middleware, function (request, response) {
-    const review = request.review;
+    const review = request.body.review;
 
     return ReviewModel.createReview(review)
         .then(dbResponse => {
-            response.status(200).send(dbResponse);
+            if (!review.rating) {
+                response.status(200).send(dbResponse);
+                return;
+            }
+            return dbResponse;
+        }).then(async review => {
+
+            if (!review) {
+                return;
+            }
+
+            const bookId = review.bookId;
+            const book = await BookModel.getBookById(bookId);
+            let { numberOfReviews, rating } = book;
+
+            numberOfReviews = numberOfReviews ? numberOfReviews + 1 : 1;
+            rating = numberOfReviews ? (rating * numberOfReviews + review.rating) / numberOfReviews : review.rating;
+
+            const update = {
+                numberOfReviews,
+                rating
+            }
+
+            await BookModel.editBookById(bookId, update);
+            response.status(200).send(review);
         })
         .catch(error => {
             response.status(400).send(error)

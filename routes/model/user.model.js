@@ -9,10 +9,26 @@ function createUser(user) {
 }
 
 function getUserByUserName(username) {
-    return UserModel.findOne({ username: username }).exec();
+    const query = {
+        username: username
+    };
+    return UserModel.findOne(query).exec();
+}
+
+function getUserByUserId(userId) {
+    return UserModel.findById(userId).exec();
+}
+
+function editUserById(userId, user) {
+    const query = {
+        _id: userId
+    }
+    return UserModel.findOneAndUpdate(query, user).exec();
 }
 
 module.exports = {
     createUser,
     getUserByUserName,
+    editUserById,
+    getUserByUserId
 }
