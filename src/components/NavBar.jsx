@@ -1,5 +1,6 @@
 import Axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router";
 import {
   Container,
   Navbar,
@@ -7,14 +8,22 @@ import {
   Form,
   FormControl,
   Button,
+  Row,
+  Col,
+  Image
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { loggedIn } from "../reducers/authReducer";
 
 const NavBar = () => {
+  const [searchResult, setSearchResult] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const logged = useSelector((state) => state.auth.value);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+
 
   useEffect(() => {
     Axios.get("/api/user/isLoggedIn").then(function (response) {
@@ -30,6 +39,25 @@ const NavBar = () => {
       .catch(function (error) {
         console.log(error);
       });
+  }
+
+  function handleSearchInput(e) {
+    e.preventDefault();
+    setSearchTerm(e.target.value);
+    const url = `/api/book/autocomplete?term=${e.target.value}`;
+    Axios.get(url)
+      .then(response => {
+        setSearchResult(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
+  function handleSelection(book) {
+    setSearchResult([]);
+    setSearchTerm("");
+    navigate(`/Book/${book._id}`);
   }
 
   return (
@@ -69,8 +97,10 @@ const NavBar = () => {
 
             <Form className="d-flex">
               <FormControl
+                onChange={e => handleSearchInput(e)}
                 type="search"
                 placeholder="Search"
+                value={searchTerm}
                 className="me-2"
                 aria-label="Search"
               />
@@ -81,6 +111,40 @@ const NavBar = () => {
           </Navbar.Collapse>
         </Container>
       </Navbar>
+      <Container className="position-absolute start-50 z-100 search-result">
+        {/* <Row>
+          <Col lg="7" xl="10"></Col>
+          <Col> */}
+        {searchResult.length > 0 &&
+          <ul>
+            {searchResult.slice(0, 7).map(book => {
+              return (
+                <li
+                  onClick={() => handleSelection(book)}
+                  key={book._id}
+                >
+                  <Container>
+                    <Row >
+                      <Col xs={2}>
+                        <Image
+                          className="search-result-image"
+                          src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1388800064l/9648068.jpg"
+                        // thumbnail={true}
+                        />
+                      </Col>
+                      <Col>
+                        <p className="book-title">{book.name}</p>
+                        <p className="book-author">By: {book.author}</p>
+                      </Col>
+                    </Row>
+                  </Container>
+                </li>)
+            })}
+          </ul>
+        }
+        {/* </Col>
+        </Row> */}
+      </Container>
     </>
   );
 };

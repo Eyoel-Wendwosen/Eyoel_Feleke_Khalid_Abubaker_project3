@@ -24,7 +24,7 @@ const BookDisplay = () => {
     Axios.get("/api/book/" + params.id).then(function (response) {
       setBook(response.data);
     });
-  }, []);
+  }, [params]);
 
   useEffect(() => {
     Axios.get("/api/book/" + params.id + "/review").then(function (response) {

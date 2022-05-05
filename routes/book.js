@@ -139,23 +139,37 @@ router.get("/search", function (request, response) {
     });
 });
 
-// Authorized accesses
-// create book
-//   router
-//     .post("/", auth_middleware, function (request, response) {
-//       const book = request.body.book;
-//       const userId = request.userId;
+// edit book 
+router.put('/:bookId', auth_middleware, function (request, response) {
+  const bookId = request.params.bookId;
+  const book = request.body.book;
 
-//       if (!book) {
-//         response.status(400).send("incorrect book argument");
-//         return;
-//       }
-//     })
-//     .catch((error) => {
-//       response.status(404).send("book not found");
-//       return;
-//     });
-// });
+  if (!bookId || bookId === '') {
+      response.status(400).send("invalid book id");
+      return;
+  };
+
+  BookModel.getBookById(bookId)
+      .then(dbResponse => {
+          const bookOwner = dbResponse.ownerId;
+
+          if (request.userId === bookOwner) {
+              return BookModel.editBookById(bookId, book)
+                  .then(updatedBook => {
+                      response.status(200).send(updatedBook);
+                  }).catch(error => {
+                      response.status(500).send(error);
+                  });
+          } else {
+              response.status(401).send("Unauthorized access");
+              return;
+          }
+      })
+      .catch(error => {
+          response.status(404).send("book not found");
+          return;
+      });
+});
 
 // delete book
 router.delete("/:bookId", auth_middleware, function (request, response) {
