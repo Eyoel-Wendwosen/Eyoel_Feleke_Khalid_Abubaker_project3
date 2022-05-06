@@ -216,6 +216,7 @@ const BookDisplay = () => {
                   onClick={handleRating}
                   readonly={!logged ? true : false}
                   initialValue={0}
+                  className="mb-3"
                   // ratingValue={rate}
                 ></Rating>
               </Form.Group>
