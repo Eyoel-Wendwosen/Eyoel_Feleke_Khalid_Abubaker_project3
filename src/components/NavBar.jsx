@@ -76,42 +76,8 @@ const NavBar = () => {
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="me-auto"></Nav>
-            {!logged ? (
-              <Nav className="nav-links">
-                <Nav.Link as={Link} to={"/Login"}>
-                  Login
-                </Nav.Link>
-                <Nav.Link as={Link} to={"/SignUp"}>
-                  Sign Up
-                </Nav.Link>
-              </Nav>
-            ) : (
-              <Nav className="nav-links">
-                {/* <NavDropdown
-                  id="nav-dropdown-dark-example"
-                  title="Dropdown"
-                  menuVariant="dark"
-                >
-                  <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                  <NavDropdown.Item href="#action/3.2">
-                    Another action
-                  </NavDropdown.Item>
-                  <NavDropdown.Item href="#action/3.3">
-                    Something
-                  </NavDropdown.Item>
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item href="#action/3.4">
-                    Separated link
-                  </NavDropdown.Item>
-                </NavDropdown> */}
-                <Nav.Link onClick={logoff}>Log Out</Nav.Link>
-                <Nav.Link as={Link} to={"/CreatePost"}>
-                  Add a book
-                </Nav.Link>
-              </Nav>
-            )}
-            <div className="position-relative">
-              <Form className="">
+            <div className="search-box me-4">
+              <Form className="search-bar">
                 <FormControl
                   onChange={(e) => handleSearchInput(e)}
                   type="search"
@@ -124,7 +90,7 @@ const NavBar = () => {
                 Search
               </Button> */}
               </Form>
-              <Container className="position-absoulte search-result">
+              <Container className="search-box-items search-result">
                 {searchResult.length > 0 && (
                   <ul>
                     {searchResult.slice(0, 7).map((book) => {
@@ -155,6 +121,37 @@ const NavBar = () => {
                 )}
               </Container>
             </div>
+            {!logged ? (
+              <Nav className="nav-links">
+                <Nav.Link as={Link} to={"/Login"}>
+                  Login
+                </Nav.Link>
+                <Nav.Link as={Link} to={"/SignUp"}>
+                  Sign Up
+                </Nav.Link>
+              </Nav>
+            ) : (
+              <Nav className="nav-links">
+                <NavDropdown
+                  id="nav-dropdown-dark-example"
+                  title={logged.username}
+                  menuVariant="light"
+                  className="dropdown-btn"
+                >
+                  <NavDropdown.Item as={Link} to={"/CreatePost"}>
+                    Add a book
+                  </NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item className="menu-item" onClick={logoff}>
+                    Log Out
+                  </NavDropdown.Item>
+                </NavDropdown>
+                {/* <Nav.Link onClick={logoff}>Log Out</Nav.Link> */}
+                {/* <Nav.Link as={Link} to={"/CreatePost"}>
+                  Add a book
+                </Nav.Link> */}
+              </Nav>
+            )}
           </Navbar.Collapse>
         </Container>
       </Navbar>
