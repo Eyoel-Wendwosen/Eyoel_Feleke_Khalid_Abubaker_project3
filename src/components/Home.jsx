@@ -21,7 +21,7 @@ const Home = () => {
   }
 
   const getBooks = () => {
-    books.sort((a, b) => b.year - a.year);
+    // books.sort((a, b) => b.year - a.year);
     return books.map((book) => (
       <Link to={`/Book/${book._id}`}>
         <Book book={book} />

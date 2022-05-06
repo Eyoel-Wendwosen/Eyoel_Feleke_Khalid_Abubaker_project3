@@ -28,29 +28,23 @@ export default function SignUp(props) {
       .catch((error) => console.log(error));
   }
 
-
   async function handleFileSelect(e) {
-
     await setSelectedFile(e.target.files[0]);
 
     const formData = new FormData();
 
-    formData.append(
-      "image",
-      selectedFile,
-      selectedFile.name
-    );
+    formData.append("image", selectedFile, selectedFile.name);
     Axios.post("/api/upload", formData)
-      .then(response => {
+      .then((response) => {
         console.log(response);
-        setNewUser(prev => ({
+        setNewUser((prev) => ({
           ...prev,
-          imageUrl: response.data.url
+          imageUrl: response.data.url,
         }));
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
-      })
+      });
   }
 
   return (
@@ -96,7 +90,11 @@ export default function SignUp(props) {
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Text className="text-muted">Profile Image</Form.Text>
-            <Form.Control onChange={e => handleFileSelect(e)} type="file" placeholder="Image" />
+            <Form.Control
+              onChange={(e) => handleFileSelect(e)}
+              type="file"
+              placeholder="Image"
+            />
           </Form.Group>
 
           <Button
