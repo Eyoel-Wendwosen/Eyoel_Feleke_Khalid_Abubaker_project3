@@ -12,7 +12,7 @@ const Home = () => {
 
   useEffect(() => {
     Axios.get("/api/book/").then(function (response) {
-      setBooks(response.data);
+      setBooks(response.data.reverse());
     });
   }, []);
 
@@ -21,6 +21,7 @@ const Home = () => {
   }
 
   const getBooks = () => {
+    books.sort((a, b) => b.year - a.year);
     return books.map((book) => (
       <Link to={`/Book/${book._id}`}>
         <Book book={book} />
