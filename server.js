@@ -3,16 +3,16 @@ const express = require("express");
 const path = require("path");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
-require('dotenv').config()
+require("dotenv").config();
 
 const app = express();
 
-const reviewRouter = require('./routes/review');
-const bookRouter = require('./routes/book');
-const userRouter = require('./routes/user');
-const uploadRoute = require('./routes/upload');
+const reviewRouter = require("./routes/review");
+const bookRouter = require("./routes/book");
+const userRouter = require("./routes/user");
+const uploadRoute = require("./routes/upload");
 
-const mongooseEndpoint = 'mongodb://127.0.0.1/book_reviews';
+const mongooseEndpoint = "mongodb://127.0.0.1/book_reviews";
 
 const mongodbUser = process.env.MONGODB_USERNAME;
 const mongodbPassword = process.env.MONGODB_PASSWORD;
@@ -25,7 +25,7 @@ const db = mongoose.connection;
 
 db.on("error", console.error.bind(console, "Error connecting to MongoDB:"));
 
-const cors = require('cors');
+const cors = require("cors");
 
 app.use(express.static(path.join(__dirname, "build")));
 
@@ -40,10 +40,10 @@ app.use(
 );
 
 // app.use(auth_middleware);
-app.use('/api/upload', uploadRoute);
-app.use('/api/review', reviewRouter);
-app.use('/api/book', bookRouter);
-app.use('/api/user', userRouter);
+app.use("/api/upload", uploadRoute);
+app.use("/api/review", reviewRouter);
+app.use("/api/book", bookRouter);
+app.use("/api/user", userRouter);
 
 app.get("*", function (req, res) {
   res.sendFile(path.join(__dirname, "build", "index.html"));
