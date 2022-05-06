@@ -37,10 +37,14 @@ router.post("/", auth_middleware, function (request, response) {
       const book = await BookModel.getBookById(bookId);
       let { numberOfReviews, rating } = book;
 
-      numberOfReviews = numberOfReviews ? numberOfReviews + 1 : 1;
-      rating = numberOfReviews
-        ? (rating * numberOfReviews + review.rating) / numberOfReviews
-        : review.rating;
+      //   numberOfReviews = numberOfReviews ? numberOfReviews + 1 : 1;
+      //   rating = numberOfReviews
+      //     ? (rating * numberOfReviews + review.rating) / numberOfReviews
+      //     : review.rating;
+
+      rating =
+        (rating * numberOfReviews + review.rating) / (numberOfReviews + 1);
+      numberOfReviews = numberOfReviews + 1;
 
       const update = {
         numberOfReviews,
@@ -70,6 +74,39 @@ router.put("/:reviewId", auth_middleware, function (request, response) {
     return;
   }
 
+  //   section to handle rating update on delete ##################
+  ReviewModel.getReviewById(reviewId).then((dbResponse) => {
+    const oldReview = dbResponse;
+    const bookId = dbResponse.bookId;
+    // console.log(bookId);
+
+    if (oldReview.rating) {
+      BookModel.getBookById(bookId).then((dbResponse) => {
+        //   console.log(dbResponse);
+        let { numberOfReviews, rating } = dbResponse;
+        rating =
+          (rating * numberOfReviews - oldReview.rating) / (numberOfReviews - 1);
+        numberOfReviews = numberOfReviews - 1;
+        if (review.rating) {
+          rating =
+            (rating * numberOfReviews + review.rating) / (numberOfReviews + 1);
+          numberOfReviews = numberOfReviews + 1;
+        }
+
+        const update = {
+          numberOfReviews,
+          rating,
+        };
+        BookModel.editBookById(bookId, update)
+          .then((dbResponse) => {})
+          .catch((error) => {
+            response.status(500).send(error);
+          });
+      });
+    }
+  });
+  //   ###################################
+
   return ReviewModel.editReviewById(reviewId, review)
     .then((dbResponse) => {
       response.status(200).send(dbResponse);
@@ -86,6 +123,39 @@ router.delete("/:reviewId", auth_middleware, function (request, response) {
     response.status(400).send("invalid reviewId");
     return;
   }
+
+  //   section to handle rating update on delete ##################
+
+  ReviewModel.getReviewById(reviewId).then((dbResponse) => {
+    const review = dbResponse;
+    const bookId = dbResponse.bookId;
+    // console.log(bookId);
+
+    if (review.rating) {
+      BookModel.getBookById(bookId).then((dbResponse) => {
+        //   console.log(dbResponse);
+        let { numberOfReviews, rating } = dbResponse;
+        if (numberOfReviews > 1) {
+          rating =
+            (rating * numberOfReviews - review.rating) / (numberOfReviews - 1);
+          numberOfReviews = numberOfReviews - 1;
+        } else {
+          rating = 0;
+          numberOfReviews = numberOfReviews - 1;
+        }
+        const update = {
+          numberOfReviews,
+          rating,
+        };
+        BookModel.editBookById(bookId, update)
+          .then((dbResponse) => {})
+          .catch((error) => {
+            response.status(500).send(error);
+          });
+      });
+    }
+  });
+  //   ###################################
 
   return ReviewModel.removeReviewById(reviewId)
     .then((dbResponse) => {
