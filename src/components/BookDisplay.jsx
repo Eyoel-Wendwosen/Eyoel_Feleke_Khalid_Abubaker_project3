@@ -125,7 +125,13 @@ const BookDisplay = () => {
     <>
       <Container>
         <div className="book-display">
-          <img src={book.imageUrl ? book.imageUrl : "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1388800064l/9648068.jpg"} />
+          <img
+            src={
+              book.imageUrl
+                ? book.imageUrl
+                : "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1388800064l/9648068.jpg"
+            }
+          />
           <div className="info-wrapper">
             <div className="book-infos">
               <div className="left-book-info">
