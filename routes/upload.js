@@ -14,6 +14,7 @@ const upload = multer({
     storage: multerS3({
         s3,
         bucket: 'book-review',
+        acl: 'public-read',
         metadata: (req, file, callback) => {
             callback(null, { fieldName: file.fieldname })
         },

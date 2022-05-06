@@ -7,7 +7,7 @@ import { Container, Form, Button } from "react-bootstrap";
 
 export default function SignUp(props) {
   const navigate = useNavigate();
-  // const [username, setUsername] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
   // const [password, setPassword] = useState("");
 
   const [newUser, setNewUser] = useState({
@@ -26,6 +26,31 @@ export default function SignUp(props) {
         navigate("/");
       })
       .catch((error) => console.log(error));
+  }
+
+
+  async function handleFileSelect(e) {
+
+    await setSelectedFile(e.target.files[0]);
+
+    const formData = new FormData();
+
+    formData.append(
+      "image",
+      selectedFile,
+      selectedFile.name
+    );
+    Axios.post("/api/upload", formData)
+      .then(response => {
+        console.log(response);
+        setNewUser(prev => ({
+          ...prev,
+          imageUrl: response.data.url
+        }));
+      })
+      .catch(err => {
+        console.log(err);
+      })
   }
 
   return (
@@ -71,7 +96,7 @@ export default function SignUp(props) {
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Text className="text-muted">Profile Image</Form.Text>
-            <Form.Control type="file" placeholder="Image" />
+            <Form.Control onChange={e => handleFileSelect(e)} type="file" placeholder="Image" />
           </Form.Group>
 
           <Button

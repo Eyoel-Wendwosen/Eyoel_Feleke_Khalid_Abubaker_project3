@@ -7,7 +7,7 @@ const Book = (props) => {
   return (
     // <div className="book-wrapper">
     <div className="card-book">
-      <img src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1388800064l/9648068.jpg" />
+      <img src={props.book.imageUrl ? props.book.imageUrl : "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1388800064l/9648068.jpg"} />
       <div className="card-infos-wrapper">
         <div className="card-book-infos">
           <div className="details">
@@ -23,7 +23,7 @@ const Book = (props) => {
               readonly="true"
               initialValue={props.book.rating}
               className="home-star-rating"
-              // ratingValue={rate}
+            // ratingValue={rate}
             ></Rating>
             {/* <p>{props.book.rating}/5</p> */}
           </div>

@@ -20,6 +20,8 @@ const BookForm = () => {
     ownerId: "",
   });
 
+  const [selectedFile, setSelectedFile] = useState(null);
+
   const params = useParams();
 
   //   if (!params.bookId) {
@@ -80,6 +82,31 @@ const BookForm = () => {
         console.log(error);
       });
   }
+
+  async function handleFileSelect(e) {
+
+    await setSelectedFile(e.target.files[0]);
+
+    const formData = new FormData();
+
+    formData.append(
+      "image",
+      selectedFile,
+      selectedFile.name
+    );
+    Axios.post("/api/upload", formData)
+      .then(response => {
+        console.log(response);
+        setNewBook(prev => ({
+          ...prev,
+          imageUrl: response.data.url
+        }));
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
+
   // name: String,
   // description: String,
   // author: String,
@@ -207,7 +234,7 @@ const BookForm = () => {
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Text className="text-muted">Book Cover Image</Form.Text>
-            <Form.Control type="file" placeholder="Image" />
+            <Form.Control onChange={e => handleFileSelect(e)} type="file" placeholder="Image" />
           </Form.Group>
           <div className="d-flex justify-content-between">
             <Button

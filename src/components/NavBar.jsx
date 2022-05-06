@@ -104,7 +104,7 @@ const NavBar = () => {
                               <div xs={2}>
                                 <Image
                                   className="search-result-image"
-                                  src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1388800064l/9648068.jpg"
+                                  src={book.imageUrl ? book.imageUrl : "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1388800064l/9648068.jpg"}
                                   // thumbnail={true}
                                 />
                               </div>
