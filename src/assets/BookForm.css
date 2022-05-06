@@ -21,6 +21,6 @@
 
 .form-control:focus {
   border-color: #1d5c63;
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
-    0 0 8px rgba(228, 64, 89, 0.4);
+  box-shadow: inset 0 1px 1px rgba(3, 115, 44, 0.075),
+    0 0 8px rgba(1, 41, 32, 0.4);
 }
