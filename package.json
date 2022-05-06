@@ -37,13 +37,13 @@
   },
   "scripts": {
     "devstart": "concurrently \"nodemon ./server.js\" \"react-scripts start\"",
-    "start": "serve -s build",
+    "start": "node ./server.js",
     "reactstart": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "https://https://book-review-neu.herokuapp.com/:8000",
+  "proxy": "https://book-review-neu.herokuapp.com:8000",
   "eslintConfig": {
     "extends": [
       "react-app",
