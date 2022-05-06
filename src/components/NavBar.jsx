@@ -138,7 +138,11 @@ const NavBar = () => {
                   menuVariant="light"
                   className="dropdown-btn"
                 >
-                  <NavDropdown.Item as={Link} to={"/CreatePost"}>
+                  <NavDropdown.Item
+                    className="menu-item"
+                    as={Link}
+                    to={"/CreatePost"}
+                  >
                     Add a book
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
