@@ -110,8 +110,8 @@ const NavBar = () => {
                 </Nav.Link>
               </Nav>
             )}
-            <div className="search-box">
-              <Form className="d-flex">
+            <div className="position-relative">
+              <Form className="">
                 <FormControl
                   onChange={(e) => handleSearchInput(e)}
                   type="search"
@@ -124,41 +124,41 @@ const NavBar = () => {
                 Search
               </Button> */}
               </Form>
-              {/* <Container className="search-box-items ">
+              <Container className="position-absoulte search-result">
                 {searchResult.length > 0 && (
-                  <div>
+                  <ul>
                     {searchResult.slice(0, 7).map((book) => {
                       return (
-                        <div
+                        <li
                           onClick={() => handleSelection(book)}
                           key={book._id}
                         >
                           <Container>
-                            <Row>
-                              <Col xs={2}>
+                            <div className="d-flex">
+                              <div xs={2}>
                                 <Image
                                   className="search-result-image"
                                   src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1388800064l/9648068.jpg"
                                   // thumbnail={true}
                                 />
-                              </Col>
-                              <Col>
+                              </div>
+                              <div className="d-flex flex-column">
                                 <p className="book-title">{book.name}</p>
                                 <p className="book-author">By: {book.author}</p>
-                              </Col>
-                            </Row>
+                              </div>
+                            </div>
                           </Container>
-                        </div>
+                        </li>
                       );
                     })}
-                  </div>
+                  </ul>
                 )}
-              </Container> */}
+              </Container>
             </div>
           </Navbar.Collapse>
         </Container>
       </Navbar>
-      <Container className="position-absoulte start-50 z-100 search-result">
+      {/* <Container className="position-absoulte start-50 z-100 search-result">
         {searchResult.length > 0 && (
           <ul>
             {searchResult.slice(0, 7).map((book) => {
@@ -184,7 +184,7 @@ const NavBar = () => {
             })}
           </ul>
         )}
-      </Container>
+      </Container> */}
     </>
   );
 };

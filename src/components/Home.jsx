@@ -4,6 +4,7 @@ import Axios from "axios";
 import Book from "./Book";
 import { Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { Rating } from "react-simple-star-rating";
 
 const Home = () => {
   const [books, setBooks] = useState(undefined);
@@ -28,14 +29,7 @@ const Home = () => {
   };
   return (
     <Container fluid className="books">
-      <div className="book-wrapper">
-        {getBooks()}
-        {getBooks()}
-        {getBooks()}
-        {getBooks()}
-        {getBooks()}
-        {getBooks()}
-      </div>
+      <div className="book-wrapper">{getBooks()}</div>
     </Container>
   );
 };

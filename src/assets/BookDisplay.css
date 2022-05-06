@@ -16,9 +16,29 @@
   padding: 0;
 }
 
+.info-wrapper {
+  padding: 0;
+  margin: 0;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.info-bottom {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 1em 3em;
+}
+
+.info-bottom p {
+  margin-top: 0.5em;
+}
+
 .book-infos {
   margin: 2em 3em;
-  flex-grow: 1;
+  /* flex-grow: 1; */
   display: flex;
   flex-direction: row;
   justify-content: space-between;

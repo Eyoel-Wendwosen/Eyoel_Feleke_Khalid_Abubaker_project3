@@ -1,65 +1,68 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const BookSchema = require('../schema/book.schema');
+const BookSchema = require("../schema/book.schema");
 
 const BookModel = mongoose.model("book", BookSchema);
 
 function createBook(book) {
-    return BookModel.create(book);
+  return BookModel.create(book);
 }
 
 function editBookById(bookId, book) {
-    const query = {
-        _id: bookId
-    }
+  const query = {
+    _id: bookId,
+  };
 
-    return BookModel.findOneAndUpdate(query, book).exec();
+  return BookModel.findOneAndUpdate(query, book).exec();
 }
 
 function getAllBooks() {
-    return BookModel.find().exec();
+  return BookModel.find().exec();
 }
 
 function getBooksByUserId(userId) {
-    const query = {
-        ownerId: userId
-    }
+  const query = {
+    ownerId: userId,
+  };
 
-    return BookModel.find(query).exec();
+  return BookModel.find(query).exec();
 }
 
 function getBookById(id) {
-    return BookModel.findById(id).exec();
+  return BookModel.findById(id).exec();
 }
 
 function removeBookById(id) {
-    return BookModel.findOneAndDelete(id).exec();
+  const query = {
+    _id: id,
+  };
+  return BookModel.findOneAndDelete(query).exec();
 }
 
 function searchBook(query) {
-    const pipeline = [
-        {
-            $search: {
-                index: "searchBook",
-                text: {
-                    query: query,
-                    path: {
-                        'wildcard': "*"
-                    }
-                }
-            }
-        }
-    ]
+  const pipeline = [
+    {
+      $search: {
+        index: "searchBook",
+        text: {
+          query: query,
+          path: {
+            wildcard: "*",
+          },
+        },
+      },
+    },
+  ];
 
-    return BookModel.aggregate(pipeline).exec();
+  return BookModel.aggregate(pipeline).exec();
 }
 
 module.exports = {
-    createBook,
-    editBookById,
-    removeBookById,
-    getAllBooks,
-    getBookById,
-    getBooksByUserId,
-    searchBook
-}
+  createBook,
+  editBookById,
+  removeBookById,
+  getAllBooks,
+  getBookById,
+  getBooksByUserId,
+  searchBook,
+};

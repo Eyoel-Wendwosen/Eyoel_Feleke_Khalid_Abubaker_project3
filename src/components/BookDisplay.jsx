@@ -5,12 +5,16 @@ import { Container, Form, Button } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import Review from "./Review";
 import { Rating } from "react-simple-star-rating";
+import { useNavigate } from "react-router";
 
 const BookDisplay = () => {
+  const navigate = useNavigate();
   const logged = useSelector((state) => state.auth.value);
   const [book, setBook] = useState(undefined);
   const [reviews, setReviews] = useState(undefined);
   const params = useParams();
+
+  const [postUser, setPostUser] = useState("");
 
   const [newReview, setNewReview] = useState({
     subject: "",
@@ -20,17 +24,44 @@ const BookDisplay = () => {
     ownerId: logged.userId,
   });
 
+  // const [reviewChange, setReviewChange] = useState(false);
+
+  function fetchReviews() {
+    Axios.get("/api/book/" + params.id + "/review").then(function (response) {
+      setReviews(response.data);
+    });
+  }
+
+  useEffect(() => {
+    fetchReviews();
+  }, []);
+
   useEffect(() => {
     Axios.get("/api/book/" + params.id).then(function (response) {
       setBook(response.data);
     });
   }, [params]);
 
+  // useEffect(() => {
+  //   Axios.get("/api/book/" + params.id + "/review").then(function (response) {
+  //     setReviews(response.data);
+  //   });
+  // }, []);
+
+  function handleReviewChange() {
+    fetchReviews();
+  }
+
   useEffect(() => {
-    Axios.get("/api/book/" + params.id + "/review").then(function (response) {
-      setReviews(response.data);
+    if (!book) {
+      return;
+    }
+    Axios.get("/api/user/" + book.ownerId).then(function (response) {
+      setPostUser(response.data);
     });
-  }, []);
+  }, [book]);
+
+  // console.log(book.ownerId);
 
   function submitReview() {
     console.log(logged);
@@ -53,7 +84,9 @@ const BookDisplay = () => {
 
   const getReviews = () => {
     // console.log(reviews);
-    return reviews.map((review) => <Review review={review} />);
+    return reviews.map((review) => (
+      <Review onChange={() => handleReviewChange()} review={review} />
+    ));
   };
 
   if (!book || !reviews) {
@@ -70,31 +103,57 @@ const BookDisplay = () => {
     }));
   };
 
-  console.log(reviews);
-
+  function deleteBook() {
+    if (!book) {
+      return;
+    }
+    Axios.delete("/api/book/" + book._id)
+      .then(function (response) {
+        console.log(book._id, "front end");
+        navigate("/");
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
   return (
     <>
       <Container>
         <div className="book-display">
           <img src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1388800064l/9648068.jpg" />
-          <div className="book-infos">
-            <div className="left-book-info">
-              <h2>{book.name}</h2>
-              <h5>By {book.author}</h5>
-              <Rating
-                size="1.5em"
-                readonly="true"
-                allowHalfIcon="true"
-                initialValue={book.rating}
-                // ratingValue="2"
-              ></Rating>
-              <p className="book-desc">{book.description}</p>
+          <div className="info-wrapper">
+            <div className="book-infos">
+              <div className="left-book-info">
+                <h2>{book.name}</h2>
+                <h5>By {book.author}</h5>
+                <Rating
+                  size="1.5em"
+                  readonly="true"
+                  allowHalfIcon="true"
+                  initialValue={book.rating}
+                  // ratingValue="2"
+                ></Rating>
+                <p className="book-desc">{book.description}</p>
+              </div>
+              <div className="right-book-info">
+                <p>Genre: {book.genre}</p>
+                <p>Language: {book.language}</p>
+                <p>Year: {year}</p>
+                <p>Number of Pages: {book.pageCount}</p>
+              </div>
             </div>
-            <div className="right-book-info">
-              <p>Genre: {book.genre}</p>
-              <p>Language: {book.language}</p>
-              <p>Year: {year}</p>
-              <p>Number of Pages: {book.pageCount}</p>
+            <div className="info-bottom">
+              <p>Created: {book.createdAt.substring(0, 10)}</p>
+              {logged.userId === book.ownerId ? (
+                <div className="d-flex gap-2 me-4">
+                  <Button className="logged-user-btn">Edit</Button>
+                  <Button className="logged-user-btn" onClick={deleteBook}>
+                    Delete
+                  </Button>
+                </div>
+              ) : (
+                <p>Posted By: {postUser.username}</p>
+              )}
             </div>
           </div>
         </div>
