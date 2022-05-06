@@ -2,7 +2,6 @@ import React from "react";
 import { Rating } from "react-simple-star-rating";
 
 const Book = (props) => {
-  console.log(props.book.year);
   const bookYear = new Date(props.book.year);
   const year = bookYear.getFullYear();
   return (
@@ -11,7 +10,7 @@ const Book = (props) => {
       <img src="https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1388800064l/9648068.jpg" />
       <div className="card-infos-wrapper">
         <div className="card-book-infos">
-          <div>
+          <div className="details">
             <h2>{props.book.name}</h2>
             <h4>Author: {props.book.author}</h4>
             <h4>Genre: {props.book.genre}</h4>

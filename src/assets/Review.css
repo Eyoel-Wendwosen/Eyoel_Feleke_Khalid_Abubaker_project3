@@ -82,3 +82,8 @@
   border-color: #1a3c40;
   margin-bottom: 0;
 }
+
+.logged-user-btn a {
+  text-decoration: none;
+  color: white;
+}

@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Form, Button } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import Axios from "axios";
 import { useNavigate } from "react-router";
+import { useParams } from "react-router";
 
 const BookForm = () => {
   const navigate = useNavigate();
   const logged = useSelector((state) => state.auth.value);
+
   const [newBook, setNewBook] = useState({
     name: "",
     description: "",
@@ -18,6 +20,38 @@ const BookForm = () => {
     ownerId: "",
   });
 
+  const params = useParams();
+
+  //   if (!params.bookId) {
+  //     setNewBook({
+  //       name: "",
+  //       description: "",
+  //       imageUrl: "",
+  //       genre: "",
+  //       pageCount: "",
+  //       language: "",
+  //       year: "",
+  //       ownerId: "",
+  //     });
+  //   }
+
+  function getBook() {
+    Axios.get("/api/book/" + params.bookId).then(function (response) {
+      setNewBook(response.data);
+    });
+  }
+  //   if (!logged || logged.userId !== params.newBook.ownerId) {
+  //     return;
+  //   }
+
+  useEffect(() => {
+    if (!params.bookId) {
+      return;
+    }
+
+    getBook();
+  }, []);
+
   function submitBook() {
     if (!logged) {
       return;
@@ -27,10 +61,24 @@ const BookForm = () => {
       book: { ...newBook, ownerId: logged.userId },
     })
       .then((response) => {
-        console.log(response.data);
         navigate(`/Book/${response.data._id}`);
       })
       .catch((error) => console.log(error));
+  }
+
+  function editBook() {
+    if (!logged) {
+      return;
+    }
+    Axios.put("/api/book/" + newBook._id, {
+      book: { ...newBook },
+    })
+      .then(function (response) {
+        navigate(`/Book/${newBook._id}`);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
   // name: String,
   // description: String,
@@ -59,12 +107,15 @@ const BookForm = () => {
   return (
     <Container>
       <div className="book-form">
-        <h3 className="form-header">Add a new book</h3>
+        <h3 className="form-header">
+          {params.bookId ? "Edit Book" : "Add a new book"}
+        </h3>
         <Form>
           <Form.Group className="mb-3">
             <Form.Control
               type="name"
               placeholder="Book Name"
+              value={newBook.name}
               onChange={(e) =>
                 setNewBook((prev) => ({
                   ...prev,
@@ -77,6 +128,7 @@ const BookForm = () => {
             <Form.Control
               type="name"
               placeholder="Book Author"
+              value={newBook.author}
               onChange={(e) =>
                 setNewBook((prev) => ({
                   ...prev,
@@ -89,6 +141,7 @@ const BookForm = () => {
             <Form.Control
               type="text"
               placeholder="Book Genre"
+              value={newBook.genre}
               onChange={(e) =>
                 setNewBook((prev) => ({
                   ...prev,
@@ -101,6 +154,7 @@ const BookForm = () => {
             <Form.Control
               type="text"
               placeholder="Book Language"
+              value={newBook.language}
               onChange={(e) =>
                 setNewBook((prev) => ({
                   ...prev,
@@ -114,6 +168,7 @@ const BookForm = () => {
               type="date"
               //   defaultValue={Date.now.getFullYear}
               placeholder="Book Year"
+              value={newBook.year}
               onChange={(e) =>
                 setNewBook((prev) => ({
                   ...prev,
@@ -126,6 +181,7 @@ const BookForm = () => {
             <Form.Control
               type="number"
               placeholder="Book Page Count"
+              value={newBook.pageCount}
               onChange={(e) =>
                 setNewBook((prev) => ({
                   ...prev,
@@ -140,6 +196,7 @@ const BookForm = () => {
               rows={3}
               type="textarea"
               placeholder="Book Description"
+              value={newBook.description}
               onChange={(e) =>
                 setNewBook((prev) => ({
                   ...prev,
@@ -152,14 +209,24 @@ const BookForm = () => {
             <Form.Text className="text-muted">Book Cover Image</Form.Text>
             <Form.Control type="file" placeholder="Image" />
           </Form.Group>
-
-          <Button
-            className="logged-user-btn"
-            variant="primary"
-            onClick={submitBook}
-          >
-            Submit
-          </Button>
+          <div className="d-flex justify-content-between">
+            <Button
+              className="logged-user-btn"
+              variant="primary"
+              onClick={params.bookId ? editBook : submitBook}
+            >
+              Submit
+            </Button>
+            <Button
+              className="logged-user-btn"
+              variant="primary"
+              onClick={() => {
+                navigate(-1);
+              }}
+            >
+              Cancel
+            </Button>
+          </div>
         </Form>
       </div>
     </Container>

@@ -19,7 +19,7 @@ const Home = () => {
   if (!books) {
     return <div>Home loading...</div>;
   }
-  console.log(books);
+
   const getBooks = () => {
     return books.map((book) => (
       <Link to={`/Book/${book._id}`}>

@@ -17,7 +17,6 @@ export default function Login(props) {
     Axios.post("/api/user/authenticate", { user: { username, password } })
       .then((response) => {
         dispatch(loggedIn(response));
-        console.log(logged);
         navigate(-1);
       })
       .catch((error) => console.log(error));

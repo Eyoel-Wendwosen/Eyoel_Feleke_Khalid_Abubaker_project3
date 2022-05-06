@@ -22,8 +22,6 @@ export default function SignUp(props) {
   function createNewUser() {
     Axios.post("/api/user", { user: { ...newUser } })
       .then((response) => {
-        console.log("Created user");
-        console.log(response.data);
         dispatch(loggedIn(response));
         navigate("/");
       })

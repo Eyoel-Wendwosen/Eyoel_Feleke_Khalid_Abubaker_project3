@@ -2,17 +2,20 @@ import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import { useParams } from "react-router";
 import { Container, Form, Button } from "react-bootstrap";
-import { useSelector } from "react-redux";
+
 import Review from "./Review";
 import { Rating } from "react-simple-star-rating";
 import { useNavigate } from "react-router";
-
+import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { loggedIn } from "../reducers/authReducer";
 const BookDisplay = () => {
   const navigate = useNavigate();
   const logged = useSelector((state) => state.auth.value);
   const [book, setBook] = useState(undefined);
   const [reviews, setReviews] = useState(undefined);
   const params = useParams();
+  const dispatch = useDispatch();
 
   const [postUser, setPostUser] = useState("");
 
@@ -23,6 +26,12 @@ const BookDisplay = () => {
     bookId: params.id,
     ownerId: logged.userId,
   });
+
+  useEffect(() => {
+    Axios.get("/api/user/isLoggedIn").then(function (response) {
+      dispatch(loggedIn(response.data));
+    });
+  }, [dispatch]);
 
   // const [reviewChange, setReviewChange] = useState(false);
 
@@ -64,7 +73,6 @@ const BookDisplay = () => {
   // console.log(book.ownerId);
 
   function submitReview() {
-    console.log(logged);
     if (!logged) {
       return;
     }
@@ -73,7 +81,6 @@ const BookDisplay = () => {
       review: { ...newReview, bookId: params.id, ownerId: logged.userId },
     })
       .then((response) => {
-        console.log(response.data);
         setReviews((prev) => {
           const updatedReviews = [...prev, response.data];
           return updatedReviews;
@@ -83,7 +90,6 @@ const BookDisplay = () => {
   }
 
   const getReviews = () => {
-    // console.log(reviews);
     return reviews.map((review) => (
       <Review onChange={() => handleReviewChange()} review={review} />
     ));
@@ -109,7 +115,6 @@ const BookDisplay = () => {
     }
     Axios.delete("/api/book/" + book._id)
       .then(function (response) {
-        console.log(book._id, "front end");
         navigate("/");
       })
       .catch(function (error) {
@@ -146,7 +151,13 @@ const BookDisplay = () => {
               <p>Created: {book.createdAt.substring(0, 10)}</p>
               {logged.userId === book.ownerId ? (
                 <div className="d-flex gap-2 me-4">
-                  <Button className="logged-user-btn">Edit</Button>
+                  <Button
+                    as={Link}
+                    to={"/EditPost/" + book._id}
+                    className="logged-user-btn"
+                  >
+                    Edit
+                  </Button>
                   <Button className="logged-user-btn" onClick={deleteBook}>
                     Delete
                   </Button>

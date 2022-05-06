@@ -143,6 +143,7 @@ router.get("/search", function (request, response) {
 router.put("/:bookId", auth_middleware, function (request, response) {
   const bookId = request.params.bookId;
   const book = request.body.book;
+  console.log(book);
 
   if (!bookId || bookId === "") {
     response.status(400).send("invalid book id");

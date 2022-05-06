@@ -40,7 +40,10 @@
   /* margin-bottom: 0.1em;
   margin-top: 8px; */
   margin: 0.2em 0.5em;
-  padding: 16px;
+  /* padding: 16px; */
+  padding-left: 0.2em;
+  padding-bottom: 0.4em;
+  overflow: hidden;
 }
 
 .card-infos-wrapper {
@@ -60,6 +63,10 @@
   justify-content: space-between;
 }
 
+.card-book-infos > div {
+  overflow: hidden;
+}
+
 .card-book .card-book-infos {
   padding: 16px;
 }
@@ -73,4 +80,8 @@
 
 .home-star-rating {
   margin-top: 0.5em;
+}
+
+.details {
+  overflow: hidden;
 }
