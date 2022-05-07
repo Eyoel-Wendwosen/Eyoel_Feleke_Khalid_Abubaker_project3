@@ -154,7 +154,7 @@ router.put("/:bookId", auth_middleware, function (request, response) {
     .then((dbResponse) => {
       const bookOwner = dbResponse.ownerId;
 
-      if (request.userId === bookOwner) {
+      if (request.userId === bookOwner.toString()) {
         return BookModel.editBookById(bookId, book)
           .then((updatedBook) => {
             response.status(200).send(updatedBook);
