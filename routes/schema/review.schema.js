@@ -9,7 +9,10 @@ const ReviewSchema = new Schema({
         default: 0
     },
     bookId: String,
-    ownerId: String,
+    ownerId: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
     createdAt: {
         type: Date,
         default: Date.now
