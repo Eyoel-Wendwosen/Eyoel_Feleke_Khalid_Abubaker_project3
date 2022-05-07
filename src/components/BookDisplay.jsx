@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import { useParams } from "react-router";
-import { Container, Form, Button } from "react-bootstrap";
+import { Container, Form, Button, FormControl } from "react-bootstrap";
 
 import Review from "./Review";
 import { Rating } from "react-simple-star-rating";
@@ -26,6 +26,22 @@ const BookDisplay = () => {
     bookId: params.id,
     ownerId: logged.userId,
   });
+  const [errors, setErrors] = useState({});
+
+  const findFormErrors = () => {
+    const { subject, text, rating } = newReview;
+    const newErrors = {};
+    // subject errors
+    if (!subject || subject === "") newErrors.subject = "cannot be blank!";
+    else if (subject.length > 30) newErrors.name = "subject is too long!";
+    // text errors
+    if (!text || text === "") newErrors.text = "cannot be blank!";
+    // rating errors
+    if (!rating || rating > 5 || rating < 0.5)
+      newErrors.rating = "must assign a rating between 0.5 and 5!";
+
+    return newErrors;
+  };
 
   useEffect(() => {
     Axios.get("/api/user/isLoggedIn").then(function (response) {
@@ -49,13 +65,7 @@ const BookDisplay = () => {
     Axios.get("/api/book/" + params.id).then(function (response) {
       setBook(response.data);
     });
-  }, [params]);
-
-  // useEffect(() => {
-  //   Axios.get("/api/book/" + params.id + "/review").then(function (response) {
-  //     setReviews(response.data);
-  //   });
-  // }, []);
+  }, [params.id]);
 
   function handleReviewChange() {
     fetchReviews();
@@ -72,7 +82,14 @@ const BookDisplay = () => {
 
   // console.log(book.ownerId);
 
-  function submitReview() {
+  function submitReview(e) {
+    e.preventDefault();
+    const newErrors = findFormErrors();
+    if (Object.keys(newErrors).length > 0) {
+      // We got errors!
+      setErrors(newErrors);
+      return;
+    }
     if (!logged) {
       return;
     }
@@ -87,6 +104,14 @@ const BookDisplay = () => {
         });
       })
       .catch((error) => console.log(error));
+
+    setNewReview((prev) => ({
+      subject: "",
+      text: "",
+      rating: 0,
+      bookId: params.id,
+      ownerId: logged.userId,
+    }));
   }
 
   const getReviews = () => {
@@ -107,6 +132,11 @@ const BookDisplay = () => {
       ...prev,
       rating: rate / 2 / 10,
     }));
+    if (!!errors.rating)
+      setErrors({
+        ...errors,
+        rating: null,
+      });
   };
 
   function deleteBook() {
@@ -190,13 +220,23 @@ const BookDisplay = () => {
                 <Form.Control
                   type="text"
                   placeholder="subject"
-                  onChange={(e) =>
+                  value={newReview.subject}
+                  onChange={(e) => {
                     setNewReview((prev) => ({
                       ...prev,
                       subject: e.target.value,
-                    }))
-                  }
+                    }));
+                    if (!!errors.subject)
+                      setErrors({
+                        ...errors,
+                        subject: null,
+                      });
+                  }}
+                  isInvalid={!!errors.subject}
                 />
+                <Form.Control.Feedback type="invalid">
+                  {errors.subject}
+                </Form.Control.Feedback>
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Control
@@ -207,28 +247,46 @@ const BookDisplay = () => {
                       ? "Please sign up or login to write a review"
                       : "Your Review"
                   }
-                  onChange={(e) =>
+                  value={newReview.text}
+                  onChange={(e) => {
                     setNewReview((prev) => ({
                       ...prev,
                       text: e.target.value,
-                    }))
-                  }
+                    }));
+                    if (!!errors.text)
+                      setErrors({
+                        ...errors,
+                        text: null,
+                      });
+                  }}
+                  isInvalid={!!errors.text}
                 />
+                <Form.Control.Feedback type="invalid">
+                  {errors.text}
+                </Form.Control.Feedback>
               </Form.Group>
               <Form.Group>
-                <Rating
-                  size="2em"
-                  allowHalfIcon="true"
-                  onClick={handleRating}
-                  readonly={!logged ? true : false}
-                  initialValue={0}
-                  className="mb-3"
-                  // ratingValue={rate}
-                ></Rating>
+                {/* <FormControl as={Rating} isInvalid={!!errors.text} /> */}
+                <div className="d-flex flex-column justify-content-start">
+                  <Rating
+                    size="2em"
+                    allowHalfIcon="true"
+                    onClick={handleRating}
+                    readonly={!logged ? true : false}
+                    initialValue={newReview.rating}
+                    className="mb-3"
+                    // isInvalid={!!errors.text}
+                    // ratingValue={rate}
+                  ></Rating>
+
+                  {errors.rating && (
+                    <span className="invalid">{errors.rating}</span>
+                  )}
+                </div>
               </Form.Group>
               <Button
                 className="logged-user-btn"
-                type="reset"
+                type="submit"
                 onClick={submitReview}
               >
                 Submit

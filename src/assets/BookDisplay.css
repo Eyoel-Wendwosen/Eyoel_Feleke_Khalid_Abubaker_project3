@@ -87,3 +87,12 @@
   width: 35em;
   /* min-width: 40em; */
 }
+
+.invalid {
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 0.875em;
+  color: #dc3545;
+  margin-top: 0;
+  margin-bottom: 0.2em;
+}
